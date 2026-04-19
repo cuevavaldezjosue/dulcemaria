@@ -1,0 +1,474 @@
+15-04-2026
+funcional, se borra el producto agregado
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>DULCE MARIA</title>
+
+<style>
+:root { --rosa:#d81b60; }
+
+body {
+    font-family: Arial;
+    margin:0;
+    background:#fafafa;
+}
+
+header {
+    background:var(--rosa);
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+nav {
+    display:flex;
+    background:white;
+    position:sticky;
+    top:0;
+}
+
+nav button {
+    flex:1;
+    padding:15px;
+    border:none;
+    background:none;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+nav button.active {
+    color:var(--rosa);
+    border-bottom:3px solid var(--rosa);
+}
+
+.container {
+    max-width:700px;
+    margin:auto;
+    padding:15px;
+}
+
+.card {
+    display:flex;
+    background:white;
+    margin-bottom:15px;
+    padding:12px;
+    border-radius:12px;
+    align-items:center;
+
+    /* 🔥 NUEVO */
+    border:1px solid #e0e0e0;
+    box-shadow:0 3px 8px rgba(0,0,0,0.06);
+    transition:0.2s;
+}
+
+.card:hover {
+    transform:scale(1.02);
+    border-color:var(--rosa);
+}
+
+.info {
+    flex:1;
+}
+
+.info h3 {
+    margin:0;
+    font-size:18px;
+}
+
+.info p {
+    margin:5px 0;
+    font-size:13px;
+    color:#666;
+}
+
+.precio {
+    color:var(--rosa);
+    font-weight:bold;
+}
+
+img {
+    width:90px;
+    height:90px;
+    object-fit:cover;
+    border-radius:10px;
+}
+
+header {
+    background: linear-gradient(135deg, #ff4d88, #d81b60);
+    padding: 15px 20px;
+}
+
+/* contenedor logo + texto */
+.logo-box {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    gap: 8px;
+}
+
+.logo-box h1 {
+    text-align: center;
+}
+
+/* logo imagen */
+.logo-box img {
+    width: 150px;
+    height: 150px;
+    border-radius: 12px;
+    object-fit: cover;
+}
+
+/* texto principal */
+.logo-box h1 {
+    font-family: 'Playfair Display', serif;
+    font-size: 40px;
+    color: white;
+    margin: 0;
+    letter-spacing: 1px;
+}
+
+</style>
+</head>
+
+
+<header class="header">
+    
+    <div class="logo-box">
+        <img src="logo.png" alt="Logo Dulce Maria">
+        <h1 onclick="toggleAdmin()">DULCE MARIA</h1> <!-- BOTON LOGGING -->
+
+    </div>
+
+</header>
+
+<div style="text-align:center; padding:10px; background:white;">
+    
+    <a href="https://wa.me/56979404439" target="_blank" style="margin:5px; text-decoration:none;">
+        <button style="padding:10px 15px; background:#25D366; color:white; border:none; border-radius:8px;">
+            WhatsApp
+        </button>
+    </a>
+
+    <a href="https://www.instagram.com/re.dulcemaria" target="_blank" style="margin:5px; text-decoration:none;">
+        <button style="padding:10px 15px; background:#E1306C; color:white; border:none; border-radius:8px;">
+            Instagram
+        </button>
+    </a>
+
+</div>
+
+<!-- formulario -->
+<div id="adminPanel" style="display:none; background:white; padding:10px; margin:10px; border-radius:10px;">
+
+ <div style="text-align:center; margin:10px;">
+  <input id="email" placeholder="Email admin">
+  <input id="pass" type="password" placeholder="Contraseña">
+  <button onclick="login()">Entrar admin</button>
+</div>   
+<h3>Agregar producto</h3>
+
+
+<input id="nombre" placeholder="Nombre"><br><br>
+<input id="desc" placeholder="Descripción"><br><br>
+<input id="precio" placeholder="Precio"><br><br>
+<input type="file" id="file"><br><br>
+
+<select id="categoria">
+<option value="tortas">TORTAS</option>
+<option value="postres">POSTRES</option>
+<option value="queques">QUEQUES</option>
+<option value="coctel">COCTEL</option>
+</select><br><br>
+
+<button onclick="agregar()">Guardar</button>
+
+<button onclick="logout()" style="background:#555; color:white; border:none; padding:8px 12px; border-radius:8px; margin-bottom:10px;">
+🔓 Salir admin
+</button>
+</div>
+
+
+
+<nav>
+<button onclick="mostrar('tortas', this)">TORTAS</button>
+<button onclick="mostrar('postres', this)">POSTRES</button>
+<button onclick="mostrar('queques', this)">QUEQUES</button>
+<button onclick="mostrar('coctel', this)">COCTEL</button>
+</nav>
+
+<div class="container">
+
+<!-- TORTAS -->
+<div id="tortas" class="categoria">
+
+
+</div>
+
+<!-- POSTRES -->
+<div id="postres" class="categoria" style="display:none;">
+
+
+</div>
+
+<!-- QUEQUES -->
+<div id="queques" class="categoria" style="display:none;">
+
+
+
+</div>
+
+<!-- COCTEL -->
+<div id="coctel" class="categoria" style="display:none;">
+
+
+</div>
+
+</div>
+
+<script>
+function mostrar(cat, btn) {
+    document.querySelectorAll('.categoria').forEach(c => c.style.display='none');
+    document.getElementById(cat).style.display='block';
+
+    document.querySelectorAll('nav button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+}
+</script>
+
+
+
+<script type="module">  
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+
+import {
+  getAuth,
+  signInWithEmailAndPassword,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+
+
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  deleteDoc,
+  doc,
+  onSnapshot,
+  updateDoc
+} from "https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js";
+
+
+
+// CONFIG
+const firebaseConfig = {
+  apiKey: "AIzaSyCzi22PNlS8fuIH6ZdKrPIPBsqPsQDzHT0",
+  authDomain: "v-dulcemaria.firebaseapp.com",
+  projectId: "v-dulcemaria",
+};
+
+// 🔥 AQUÍ VA
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+const auth = getAuth(app);
+
+let esAdmin = false;
+
+// AGREGAR
+window.agregar = async function () {
+  if (!auth.currentUser) {
+    alert("Debes iniciar sesión primero");
+    return;
+  }
+
+  const nombre = document.getElementById("nombre").value;
+  const desc = document.getElementById("desc").value;
+  const precio = document.getElementById("precio").value;
+  const categoria = document.getElementById("categoria").value
+    .toLowerCase()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .trim();
+  const file = document.getElementById("file").files[0];
+
+  const guardar = async (imgURL) => {
+    await addDoc(collection(db, "productos"), {
+      nombre,
+      desc,
+      precio,
+      categoria,
+      img: imgURL
+    });
+  };
+
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      await guardar(e.target.result);
+    };
+    reader.readAsDataURL(file);
+    return;
+  }
+
+  await guardar("https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=300");
+};
+
+// ELIMINAR (ESTO TE FALTABA)
+// EDITAR
+window.editar = async function (id, data) {
+
+  if (!esAdmin) {
+    alert("No autorizado");
+    return;
+  }
+
+  const nombre = prompt("Nombre:", data.nombre);
+  if (nombre === null) return;
+
+  const desc = prompt("Descripción:", data.desc);
+  if (desc === null) return;
+
+  const precio = prompt("Precio:", data.precio);
+  if (precio === null) return;
+
+  await updateDoc(doc(db, "productos", id), {
+    nombre,
+    desc,
+    precio
+  });
+};
+
+// ELIMINAR
+window.eliminar = async function (id) {
+
+  if (!esAdmin) {
+    alert("No autorizado");
+    return;
+  }
+
+  if (confirm("¿Eliminar producto?")) {
+    await deleteDoc(doc(db, "productos", id));
+  }
+};
+
+// MOSTRAR
+const categorias = {
+  tortas: document.getElementById("tortas"),
+  postres: document.getElementById("postres"),
+  queques: document.getElementById("queques"),
+  coctel: document.getElementById("coctel")
+};
+
+onSnapshot(collection(db, "productos"), (snapshot) => {
+
+    const cats = {
+        tortas: document.getElementById("tortas"),
+        postres: document.getElementById("postres"),
+        queques: document.getElementById("queques"),
+        coctel: document.getElementById("coctel")
+    };
+
+    // limpiar una sola vez
+    Object.values(cats).forEach(c => c.innerHTML = "");
+
+    snapshot.forEach((docSnap) => {
+
+        const p = docSnap.data();
+        const id = docSnap.id;
+
+        const cat = String(p.categoria || "")
+          .toLowerCase()
+          .normalize("NFD")
+          .replace(/[\u0300-\u036f]/g, "")
+          .trim()
+          .split(" ")[0];
+
+        console.log("RAW:", p.categoria);
+        console.log("LIMPIO:", cat);
+        console.log("EXISTE EN CATS:", !!cats[cat]);
+
+        const contenedor = cats[cat];
+
+        if (!contenedor) {
+            console.log("❌ CATEGORÍA NO RECONOCIDA:", cat, p.categoria);
+            return;
+        }
+
+        const div = document.createElement("div");
+        div.className = "card";
+
+        div.innerHTML = `
+           <div class="info">
+                 <h3>${p.nombre || ""}</h3>
+                 <p>${p.desc || ""}</p>
+                 <span class="precio">
+                   $${Number(p.precio || 0).toLocaleString("es-CL")}
+                 </span>
+           </div>
+
+           <img src="${p.img || 'https://images.unsplash.com/photo-1563729784474-d77dbb933a9e?w=300'}">
+
+           ${esAdmin ? `
+             <div style="display:flex; flex-direction:column; gap:5px; margin-left:10px;">
+                 <button onclick='editar("${id}", ${JSON.stringify(p)})'>✏️</button>
+                 <button onclick="eliminar('${id}')">🗑</button>
+             </div>
+           ` : ""}
+        `;
+
+        contenedor.appendChild(div);
+    });
+});
+
+
+onAuthStateChanged(auth, (user) => {
+  console.log("AUTH STATE CHANGE:", user);
+  if (user) {
+    esAdmin = true;
+  } else {
+    esAdmin = false;
+    document.getElementById("adminPanel").style.display = "none";
+  }
+});
+
+
+
+window.login = async function () {
+  const email = document.getElementById("email").value;
+  const pass = document.getElementById("pass").value;
+
+  try {
+    await signInWithEmailAndPassword(auth, email, pass);
+    alert("Bienvenido admin");
+  } catch (error) {
+    console.log(error.message);
+    alert("Error de login");
+  }
+};
+
+window.toggleAdmin = function () {
+  const panel = document.getElementById("adminPanel");
+  panel.style.display = panel.style.display === "none" ? "block" : "none";
+};
+
+
+window.logout = async function () {
+  await signOut(auth);
+  alert("Sesión cerrada");
+};
+</script>
+
+</body>
+
+</html> 
+
+ 

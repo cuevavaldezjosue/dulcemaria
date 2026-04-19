@@ -1,0 +1,2 @@
+ruta
+cd C:\Users\Yancv\OneDrive\Escritorio\ventasweb\publico
